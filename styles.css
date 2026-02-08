@@ -895,12 +895,11 @@ p { color: var(--text-secondary); }
 }
 
 .timeline-thumbnail {
-  width: 80px;
-  height: 50px;
+  width: 100%;
+  height: 80px;
   border-radius: var(--radius-sm);
   background: var(--border);
   overflow: hidden;
-  flex-shrink: 0;
 }
 
 .timeline-thumbnail img {
