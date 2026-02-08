@@ -884,6 +884,7 @@ p { color: var(--text-secondary); }
   border: 1px solid var(--border-light);
   text-decoration: none;
   display: flex;
+  flex-direction: column;
   gap: var(--space-md);
   transition: all var(--transition-base);
 }
