@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System - ChangeHawk</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .ds-section {
+      margin-bottom: var(--space-3xl);
+    }
+
+    .ds-section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+    }
+
+    .color-swatch {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+
+    .color-preview {
+      height: 60px;
+    }
+
+    .color-info {
+      padding: var(--space-md);
+      background: var(--bg-elevated);
+    }
+
+    .color-name {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    .color-value {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+    }
+
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-lg);
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+    }
+
+    .icon-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .icon-name {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .spacing-demo {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .spacing-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .spacing-bar {
+      background: var(--accent);
+      height: 16px;
+      border-radius: var(--radius-sm);
+    }
+
+    .spacing-label {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      min-width: 80px;
+    }
+
+    .radius-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+    }
+
+    .radius-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-lg);
+    }
+
+    .radius-box {
+      width: 60px;
+      height: 60px;
+      background: var(--accent);
+    }
+
+    .radius-label {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <div class="header-inner">
+          <a href="settings.html" class="btn btn-ghost" style="padding-left: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back
+          </a>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <span class="toggle-icon icon-sun">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </span>
+            <span class="toggle-icon icon-moon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="screen-content">
+      <div class="container">
+        <h1 class="mb-sm">Design System</h1>
+        <p class="mb-xl">ChangeHawk UI components and tokens</p>
+
+        <!-- Colors -->
+        <div class="ds-section">
+          <div class="ds-section-title">Colors</div>
+          <div class="color-grid">
+            <div class="color-swatch">
+              <div class="color-preview" style="background: var(--accent);"></div>
+              <div class="color-info">
+                <div class="color-name">Accent</div>
+                <div class="color-value">--accent</div>
+              </div>
+            </div>
+            <div class="color-swatch">
+              <div class="color-preview" style="background: var(--accent-secondary);"></div>
+              <div class="color-info">
+                <div class="color-name">Secondary</div>
+                <div class="color-value">--accent-secondary</div>
+              </div>
+            </div>
+            <div class="color-swatch">
+              <div class="color-preview" style="background: var(--success);"></div>
+              <div class="color-info">
+                <div class="color-name">Success</div>
+                <div class="color-value">--success</div>
+              </div>
+            </div>
+            <div class="color-swatch">
+              <div class="color-preview" style="background: var(--warning);"></div>
+              <div class="color-info">
+                <div class="color-name">Warning</div>
+                <div class="color-value">--warning</div>
+              </div>
+            </div>
+            <div class="color-swatch">
+              <div class="color-preview" style="background: var(--danger);"></div>
+              <div class="color-info">
+                <div class="color-name">Danger</div>
+                <div class="color-value">--danger</div>
+              </div>
+            </div>
+            <div class="color-swatch">
+              <div class="color-preview" style="background: var(--text);"></div>
+              <div class="color-info">
+                <div class="color-name">Text</div>
+                <div class="color-value">--text</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="ds-section">
+          <div class="ds-section-title">Typography</div>
+          <div class="stack stack-lg">
+            <div>
+              <h1>Heading 1 - 1.875rem</h1>
+              <p class="text-muted mt-xs">Used for page titles</p>
+            </div>
+            <div>
+              <h2>Heading 2 - 1.5rem</h2>
+              <p class="text-muted mt-xs">Used for section headers</p>
+            </div>
+            <div>
+              <h3>Heading 3 - 1.125rem</h3>
+              <p class="text-muted mt-xs">Used for card titles</p>
+            </div>
+            <div>
+              <p>Body text - 1rem (16px)</p>
+              <p class="text-muted mt-xs">Default paragraph text</p>
+            </div>
+            <div>
+              <span class="highlight">Highlighted text</span>
+              <p class="text-muted mt-xs">For emphasis</p>
+            </div>
+            <div>
+              <span class="highlight-warning">Warning highlight</span>
+              <p class="text-muted mt-xs">For changes/alerts</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="ds-section">
+          <div class="ds-section-title">Buttons</div>
+          <div class="stack stack-md">
+            <button class="btn btn-primary btn-full">Primary Button</button>
+            <button class="btn btn-secondary btn-full">Secondary Button</button>
+            <button class="btn btn-ghost btn-full">Ghost Button</button>
+            <div class="row">
+              <button class="btn btn-primary btn-sm">Small Primary</button>
+              <button class="btn btn-secondary btn-sm">Small Secondary</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="ds-section">
+          <div class="ds-section-title">Badges</div>
+          <div class="row" style="flex-wrap: wrap; gap: var(--space-sm);">
+            <span class="badge badge-accent">Accent</span>
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-warning">Warning</span>
+            <span class="badge badge-danger">Danger</span>
+            <span class="badge badge-muted">Muted</span>
+          </div>
+          <div class="row mt-md" style="flex-wrap: wrap; gap: var(--space-sm);">
+            <span class="badge badge-sm badge-accent">Small Accent</span>
+            <span class="badge badge-sm badge-success">Small Success</span>
+            <span class="badge badge-sm badge-danger">Small Danger</span>
+          </div>
+        </div>
+
+        <!-- Cards -->
+        <div class="ds-section">
+          <div class="ds-section-title">Cards</div>
+          <div class="stack stack-md">
+            <div class="card">
+              <h3>Default Card</h3>
+              <p class="mt-sm">Standard card with padding and border</p>
+            </div>
+            <div class="card card-glass">
+              <h3>Glass Card</h3>
+              <p class="mt-sm">Frosted glass effect background</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Elements -->
+        <div class="ds-section">
+          <div class="ds-section-title">Form Elements</div>
+          <div class="stack stack-md">
+            <input type="text" class="input" placeholder="Text input" />
+            <select class="select" style="width: 100%;">
+              <option>Select option</option>
+              <option>Option 1</option>
+              <option>Option 2</option>
+            </select>
+            <div class="row">
+              <span>Toggle switch:</span>
+              <div class="toggle" onclick="this.classList.toggle('active')"></div>
+              <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Icons -->
+        <div class="ds-section">
+          <div class="ds-section-title">Icons (Feather/Lucide)</div>
+          <div class="icon-grid">
+            <div class="icon-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span class="icon-name">Eye</span>
+            </div>
+            <div class="icon-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="icon-name">Bell</span>
+            </div>
+            <div class="icon-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span class="icon-name">Clock</span>
+            </div>
+            <div class="icon-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span class="icon-name">Settings</span>
+            </div>
+            <div class="icon-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span class="icon-name">Plus</span>
+            </div>
+            <div class="icon-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span class="icon-name">Check</span>
+            </div>
+            <div class="icon-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+              <span class="icon-name">Chevron</span>
+            </div>
+            <div class="icon-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span class="icon-name">Alert</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spacing -->
+        <div class="ds-section">
+          <div class="ds-section-title">Spacing</div>
+          <div class="spacing-demo">
+            <div class="spacing-item">
+              <span class="spacing-label">--space-xs</span>
+              <div class="spacing-bar" style="width: var(--space-xs);"></div>
+              <span class="spacing-label">4px</span>
+            </div>
+            <div class="spacing-item">
+              <span class="spacing-label">--space-sm</span>
+              <div class="spacing-bar" style="width: var(--space-sm);"></div>
+              <span class="spacing-label">8px</span>
+            </div>
+            <div class="spacing-item">
+              <span class="spacing-label">--space-md</span>
+              <div class="spacing-bar" style="width: var(--space-md);"></div>
+              <span class="spacing-label">16px</span>
+            </div>
+            <div class="spacing-item">
+              <span class="spacing-label">--space-lg</span>
+              <div class="spacing-bar" style="width: var(--space-lg);"></div>
+              <span class="spacing-label">24px</span>
+            </div>
+            <div class="spacing-item">
+              <span class="spacing-label">--space-xl</span>
+              <div class="spacing-bar" style="width: var(--space-xl);"></div>
+              <span class="spacing-label">32px</span>
+            </div>
+            <div class="spacing-item">
+              <span class="spacing-label">--space-2xl</span>
+              <div class="spacing-bar" style="width: var(--space-2xl);"></div>
+              <span class="spacing-label">48px</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Border Radius -->
+        <div class="ds-section">
+          <div class="ds-section-title">Border Radius</div>
+          <div class="radius-grid">
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: var(--radius-sm);"></div>
+              <span class="radius-label">--radius-sm (12px)</span>
+            </div>
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: var(--radius-md);"></div>
+              <span class="radius-label">--radius-md (16px)</span>
+            </div>
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: var(--radius-lg);"></div>
+              <span class="radius-label">--radius-lg (24px)</span>
+            </div>
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: var(--radius-xl);"></div>
+              <span class="radius-label">--radius-xl (32px)</span>
+            </div>
+            <div class="radius-item">
+              <div class="radius-box" style="border-radius: var(--radius-pill);"></div>
+              <span class="radius-label">--radius-pill</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pages -->
+        <div class="ds-section">
+          <div class="ds-section-title">Pages</div>
+          <div class="stack stack-sm">
+            <a href="index.html" class="card card-interactive">
+              <div class="row row-between">
+                <span>Landing Page</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </div>
+            </a>
+            <a href="dashboard.html" class="card card-interactive">
+              <div class="row row-between">
+                <span>Dashboard</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </div>
+            </a>
+            <a href="diff.html" class="card card-interactive">
+              <div class="row row-between">
+                <span>Diff View</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </div>
+            </a>
+            <a href="history.html" class="card card-interactive">
+              <div class="row row-between">
+                <span>History</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </div>
+            </a>
+            <a href="settings.html" class="card card-interactive">
+              <div class="row row-between">
+                <span>Settings</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p class="footer-text">ChangeHawk Design System</p>
+      </div>
+    </footer>
+  </div>
+
+  <span class="demo-tag">DEMO</span>
+
+  <script>
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Changes - ChangeHawk</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Extra styles for the diff view */
+    .diff-screenshot-wrapper {
+      position: relative;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [data-theme="dark"] .diff-screenshot-wrapper {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+
+    .mock-page {
+      width: 100%;
+      padding: 20px;
+      font-size: 12px;
+      color: #333;
+    }
+
+    [data-theme="dark"] .mock-page {
+      color: #e0e0e0;
+    }
+
+    .mock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 16px;
+    }
+
+    [data-theme="dark"] .mock-header {
+      border-color: #444;
+    }
+
+    .mock-logo {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .mock-nav {
+      display: flex;
+      gap: 12px;
+      font-size: 10px;
+      color: #666;
+    }
+
+    [data-theme="dark"] .mock-nav {
+      color: #aaa;
+    }
+
+    .mock-pricing {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .mock-plan {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+    }
+
+    [data-theme="dark"] .mock-plan {
+      background: #252525;
+      border-color: #444;
+    }
+
+    .mock-plan-name {
+      font-weight: 600;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .mock-plan-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2db3b3;
+    }
+
+    .mock-plan-period {
+      font-size: 9px;
+      color: #999;
+    }
+
+    .price-changed {
+      position: relative;
+    }
+
+    .price-old {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 12px;
+    }
+
+    .price-new {
+      color: #e85d5d;
+    }
+
+    /* Change highlight overlay */
+    .change-indicator {
+      position: absolute;
+      border: 2px solid #e85d5d;
+      background: rgba(232, 93, 93, 0.15);
+      border-radius: 6px;
+      pointer-events: none;
+      animation: pulse-highlight 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-highlight {
+      0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(232, 93, 93, 0.4);
+      }
+      50% { 
+        box-shadow: 0 0 0 8px rgba(232, 93, 93, 0);
+      }
+    }
+
+    .change-label {
+      position: absolute;
+      top: -24px;
+      left: 0;
+      background: #e85d5d;
+      color: white;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* Overlay slider specific */
+    .overlay-container {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    }
+
+    [data-theme="dark"] .overlay-container {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+
+    .overlay-before,
+    .overlay-after {
+      width: 100%;
+    }
+
+    .overlay-after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      clip-path: inset(0 50% 0 0);
+    }
+
+    .slider-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: var(--accent);
+      transform: translateX(-50%);
+      z-index: 20;
+      cursor: ew-resize;
+    }
+
+    .slider-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: ew-resize;
+    }
+
+    .slider-labels {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 15;
+    }
+
+    .slider-label {
+      background: rgba(0,0,0,0.6);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <div class="header-inner">
+          <a href="dashboard.html" class="btn btn-ghost" style="padding-left: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back
+          </a>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <span class="toggle-icon icon-sun">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </span>
+            <span class="toggle-icon icon-moon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="screen-content pb-nav">
+      <div class="container container-wide">
+        <!-- Page Header -->
+        <div class="mb-lg">
+          <h2 class="mb-sm">competitor.com/pricing</h2>
+          <div class="row" style="gap: 8px; flex-wrap: wrap;">
+            <span class="badge badge-danger">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              3 changes detected
+            </span>
+            <span class="badge badge-muted">2 hours ago</span>
+          </div>
+        </div>
+
+        <!-- View Mode Toggle -->
+        <div class="diff-mode-toggle mb-lg">
+          <button class="diff-mode-btn active" onclick="setMode('overlay')">Overlay</button>
+          <button class="diff-mode-btn" onclick="setMode('sidebyside')">Side by side</button>
+        </div>
+
+        <!-- Overlay View (Default) -->
+        <div id="overlay-view" class="mb-lg">
+          <div class="overlay-container" id="overlayContainer">
+            <div class="slider-labels">
+              <span class="slider-label">BEFORE</span>
+              <span class="slider-label">AFTER</span>
+            </div>
+
+            <!-- Before screenshot -->
+            <div class="overlay-before diff-screenshot-wrapper">
+              <div class="mock-page">
+                <div class="mock-header">
+                  <div class="mock-logo">Competitor Inc</div>
+                  <div class="mock-nav">
+                    <span>Products</span>
+                    <span>Pricing</span>
+                    <span>About</span>
+                  </div>
+                </div>
+                <div class="mock-pricing">
+                  <div class="mock-plan">
+                    <div class="mock-plan-name">Starter</div>
+                    <div class="mock-plan-price">$29</div>
+                    <div class="mock-plan-period">/month</div>
+                  </div>
+                  <div class="mock-plan">
+                    <div class="mock-plan-name">Pro</div>
+                    <div class="mock-plan-price">$79</div>
+                    <div class="mock-plan-period">/month</div>
+                  </div>
+                  <div class="mock-plan">
+                    <div class="mock-plan-name">Enterprise</div>
+                    <div class="mock-plan-price">$199</div>
+                    <div class="mock-plan-period">/month</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- After screenshot -->
+            <div class="overlay-after diff-screenshot-wrapper" id="overlayAfter">
+              <div class="mock-page">
+                <div class="mock-header">
+                  <div class="mock-logo">Competitor Inc</div>
+                  <div class="mock-nav">
+                    <span>Products</span>
+                    <span>Pricing</span>
+                    <span>About</span>
+                  </div>
+                </div>
+                <div class="mock-pricing">
+                  <div class="mock-plan">
+                    <div class="mock-plan-name">Starter</div>
+                    <div class="mock-plan-price price-new">$39</div>
+                    <div class="mock-plan-period">/month</div>
+                  </div>
+                  <div class="mock-plan">
+                    <div class="mock-plan-name">Pro</div>
+                    <div class="mock-plan-price price-new">$99</div>
+                    <div class="mock-plan-period">/month</div>
+                  </div>
+                  <div class="mock-plan">
+                    <div class="mock-plan-name">Enterprise</div>
+                    <div class="mock-plan-price price-new">$249</div>
+                    <div class="mock-plan-period">/month</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Change indicators on after view -->
+              <div class="change-indicator" style="top: 72px; left: 14%; width: 22%; height: 45px;">
+                <span class="change-label">Price +$10</span>
+              </div>
+              <div class="change-indicator" style="top: 72px; left: 39%; width: 22%; height: 45px;">
+                <span class="change-label">Price +$20</span>
+              </div>
+              <div class="change-indicator" style="top: 72px; left: 64%; width: 22%; height: 45px;">
+                <span class="change-label">Price +$50</span>
+              </div>
+            </div>
+
+            <!-- Slider -->
+            <div class="slider-line" id="sliderLine">
+              <div class="slider-handle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                  <polyline points="9 18 15 12 9 6" transform="translate(6, 0)"></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side by Side View (Hidden by default) -->
+        <div id="sidebyside-view" class="mb-lg" style="display: none;">
+          <div class="diff-panels side-by-side">
+            <div class="diff-panel">
+              <div class="diff-panel-header">
+                <span class="diff-panel-title">Before</span>
+                <span class="diff-panel-date">Feb 8, 10:00</span>
+              </div>
+              <div class="diff-screenshot-wrapper">
+                <div class="mock-page">
+                  <div class="mock-header">
+                    <div class="mock-logo">Competitor Inc</div>
+                    <div class="mock-nav">
+                      <span>Products</span>
+                      <span>Pricing</span>
+                    </div>
+                  </div>
+                  <div class="mock-pricing">
+                    <div class="mock-plan">
+                      <div class="mock-plan-name">Starter</div>
+                      <div class="mock-plan-price">$29</div>
+                      <div class="mock-plan-period">/mo</div>
+                    </div>
+                    <div class="mock-plan">
+                      <div class="mock-plan-name">Pro</div>
+                      <div class="mock-plan-price">$79</div>
+                      <div class="mock-plan-period">/mo</div>
+                    </div>
+                    <div class="mock-plan">
+                      <div class="mock-plan-name">Enterprise</div>
+                      <div class="mock-plan-price">$199</div>
+                      <div class="mock-plan-period">/mo</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="diff-panel">
+              <div class="diff-panel-header">
+                <span class="diff-panel-title">After</span>
+                <span class="diff-panel-date">Feb 8, 12:00</span>
+              </div>
+              <div class="diff-screenshot-wrapper" style="position: relative;">
+                <div class="mock-page">
+                  <div class="mock-header">
+                    <div class="mock-logo">Competitor Inc</div>
+                    <div class="mock-nav">
+                      <span>Products</span>
+                      <span>Pricing</span>
+                    </div>
+                  </div>
+                  <div class="mock-pricing">
+                    <div class="mock-plan">
+                      <div class="mock-plan-name">Starter</div>
+                      <div class="mock-plan-price price-new">$39</div>
+                      <div class="mock-plan-period">/mo</div>
+                    </div>
+                    <div class="mock-plan">
+                      <div class="mock-plan-name">Pro</div>
+                      <div class="mock-plan-price price-new">$99</div>
+                      <div class="mock-plan-period">/mo</div>
+                    </div>
+                    <div class="mock-plan">
+                      <div class="mock-plan-name">Enterprise</div>
+                      <div class="mock-plan-price price-new">$249</div>
+                      <div class="mock-plan-period">/mo</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text Diff -->
+        <div class="card mb-lg">
+          <h3 class="mb-md">Text Changes</h3>
+          <div class="text-diff">
+            <div class="diff-line diff-unchanged">Starter Plan</div>
+            <div class="diff-line diff-removed">$29/month</div>
+            <div class="diff-line diff-added">$39/month</div>
+            <div class="diff-line diff-unchanged"></div>
+            <div class="diff-line diff-unchanged">Pro Plan</div>
+            <div class="diff-line diff-removed">$79/month</div>
+            <div class="diff-line diff-added">$99/month</div>
+            <div class="diff-line diff-unchanged"></div>
+            <div class="diff-line diff-unchanged">Enterprise Plan</div>
+            <div class="diff-line diff-removed">$199/month</div>
+            <div class="diff-line diff-added">$249/month</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="stack stack-md">
+          <button class="btn btn-primary btn-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Mark as reviewed
+          </button>
+          <button class="btn btn-secondary btn-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+              <polyline points="16 6 12 2 8 6"></polyline>
+              <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+            Share changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="dashboard.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Sites</span>
+        </a>
+        <a href="history.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>History</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Settings</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <span class="demo-tag">DEMO</span>
+
+  <script>
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // View mode toggle
+    function setMode(mode) {
+      const buttons = document.querySelectorAll('.diff-mode-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (mode === 'overlay') {
+        document.getElementById('overlay-view').style.display = 'block';
+        document.getElementById('sidebyside-view').style.display = 'none';
+      } else {
+        document.getElementById('overlay-view').style.display = 'none';
+        document.getElementById('sidebyside-view').style.display = 'block';
+      }
+    }
+
+    // Slider functionality
+    const container = document.getElementById('overlayContainer');
+    const sliderLine = document.getElementById('sliderLine');
+    const overlayAfter = document.getElementById('overlayAfter');
+    let isDragging = false;
+
+    function updateSlider(x) {
+      const rect = container.getBoundingClientRect();
+      let percentage = ((x - rect.left) / rect.width) * 100;
+      percentage = Math.max(0, Math.min(100, percentage));
+      
+      sliderLine.style.left = percentage + '%';
+      overlayAfter.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`;
+    }
+
+    sliderLine.addEventListener('mousedown', () => isDragging = true);
+    sliderLine.addEventListener('touchstart', () => isDragging = true);
+    
+    document.addEventListener('mouseup', () => isDragging = false);
+    document.addEventListener('touchend', () => isDragging = false);
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) updateSlider(e.clientX);
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (isDragging) updateSlider(e.touches[0].clientX);
+    });
+
+    // Click to move slider
+    container.addEventListener('click', (e) => {
+      updateSlider(e.clientX);
+    });
+  </script>
+</body>
+</html>

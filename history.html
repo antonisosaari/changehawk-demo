@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History - ChangeHawk</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .history-thumbnail {
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .history-thumbnail {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+
+    .history-thumbnail-content {
+      text-align: center;
+      padding: 8px;
+    }
+
+    .history-thumbnail-mock {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      margin-top: 4px;
+    }
+
+    .history-thumbnail-bar {
+      width: 16px;
+      height: 24px;
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .url-selector {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      margin-bottom: var(--space-lg);
+    }
+
+    .url-selector select {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text);
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .url-selector select:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <div class="header-inner">
+          <a href="index.html" class="logo">
+            <span class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="4"></circle>
+                <line x1="21.17" y1="8" x2="12" y2="8"></line>
+                <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
+                <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+              </svg>
+            </span>
+            ChangeHawk
+          </a>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <span class="toggle-icon icon-sun">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </span>
+            <span class="toggle-icon icon-moon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="screen-content pb-nav">
+      <div class="container">
+        <h2 class="mb-lg">Change History</h2>
+
+        <!-- URL Selector -->
+        <div class="url-selector">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <select>
+            <option>competitor.com/pricing</option>
+            <option>rival.fi/products</option>
+            <option>example.com/terms</option>
+            <option>acme.io/features</option>
+            <option>startup.dev/pricing</option>
+          </select>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+          <!-- Today -->
+          <div class="timeline-item has-changes animate-slide-up">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">Today, 12:00 PM</div>
+            <a href="diff.html" class="timeline-card">
+              <div class="history-thumbnail">
+                <div class="history-thumbnail-content">
+                  <div style="font-weight: 600; margin-bottom: 4px;">Pricing</div>
+                  <div class="history-thumbnail-mock">
+                    <div class="history-thumbnail-bar" style="background: #e85d5d;"></div>
+                    <div class="history-thumbnail-bar" style="background: #e85d5d;"></div>
+                    <div class="history-thumbnail-bar" style="background: #e85d5d;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-title">
+                  <span class="badge badge-danger badge-sm" style="margin-right: 4px;">3 changes</span>
+                  Price increase
+                </div>
+                <div class="timeline-summary">All plan prices increased by 25-35%</div>
+              </div>
+            </a>
+          </div>
+
+          <!-- 3 days ago -->
+          <div class="timeline-item no-changes animate-slide-up" style="animation-delay: 0.1s">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">Feb 5, 10:00 AM</div>
+            <a href="#" class="timeline-card">
+              <div class="history-thumbnail">
+                <div class="history-thumbnail-content">
+                  <div style="font-weight: 600; margin-bottom: 4px;">Pricing</div>
+                  <div class="history-thumbnail-mock">
+                    <div class="history-thumbnail-bar"></div>
+                    <div class="history-thumbnail-bar"></div>
+                    <div class="history-thumbnail-bar"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-title">
+                  <span class="badge badge-success badge-sm" style="margin-right: 4px;">No changes</span>
+                  Routine check
+                </div>
+                <div class="timeline-summary">Page unchanged since last check</div>
+              </div>
+            </a>
+          </div>
+
+          <!-- 1 week ago -->
+          <div class="timeline-item has-changes animate-slide-up" style="animation-delay: 0.2s">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">Feb 1, 2:30 PM</div>
+            <a href="#" class="timeline-card">
+              <div class="history-thumbnail">
+                <div class="history-thumbnail-content">
+                  <div style="font-weight: 600; margin-bottom: 4px;">Pricing</div>
+                  <div class="history-thumbnail-mock">
+                    <div class="history-thumbnail-bar" style="background: var(--warning);"></div>
+                    <div class="history-thumbnail-bar"></div>
+                    <div class="history-thumbnail-bar"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-title">
+                  <span class="badge badge-warning badge-sm" style="margin-right: 4px;">1 change</span>
+                  New feature badge
+                </div>
+                <div class="timeline-summary">Added "New" badge to Pro plan</div>
+              </div>
+            </a>
+          </div>
+
+          <!-- 2 weeks ago -->
+          <div class="timeline-item no-changes animate-slide-up" style="animation-delay: 0.3s">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">Jan 25, 9:00 AM</div>
+            <a href="#" class="timeline-card">
+              <div class="history-thumbnail">
+                <div class="history-thumbnail-content">
+                  <div style="font-weight: 600; margin-bottom: 4px;">Pricing</div>
+                  <div class="history-thumbnail-mock">
+                    <div class="history-thumbnail-bar"></div>
+                    <div class="history-thumbnail-bar"></div>
+                    <div class="history-thumbnail-bar"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-title">
+                  <span class="badge badge-success badge-sm" style="margin-right: 4px;">No changes</span>
+                  Routine check
+                </div>
+                <div class="timeline-summary">Page unchanged since last check</div>
+              </div>
+            </a>
+          </div>
+
+          <!-- 3 weeks ago -->
+          <div class="timeline-item has-changes animate-slide-up" style="animation-delay: 0.4s">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">Jan 18, 4:15 PM</div>
+            <a href="#" class="timeline-card">
+              <div class="history-thumbnail">
+                <div class="history-thumbnail-content">
+                  <div style="font-weight: 600; margin-bottom: 4px;">Pricing</div>
+                  <div class="history-thumbnail-mock">
+                    <div class="history-thumbnail-bar" style="background: var(--success);"></div>
+                    <div class="history-thumbnail-bar" style="background: var(--success);"></div>
+                    <div class="history-thumbnail-bar"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-title">
+                  <span class="badge badge-danger badge-sm" style="margin-right: 4px;">2 changes</span>
+                  Price decrease
+                </div>
+                <div class="timeline-summary">Starter and Pro prices reduced by 10%</div>
+              </div>
+            </a>
+          </div>
+
+          <!-- First capture -->
+          <div class="timeline-item no-changes animate-slide-up" style="animation-delay: 0.5s">
+            <div class="timeline-dot"></div>
+            <div class="timeline-date">Jan 10, 11:00 AM</div>
+            <a href="#" class="timeline-card">
+              <div class="history-thumbnail">
+                <div class="history-thumbnail-content">
+                  <div style="font-weight: 600; margin-bottom: 4px;">Pricing</div>
+                  <div class="history-thumbnail-mock">
+                    <div class="history-thumbnail-bar"></div>
+                    <div class="history-thumbnail-bar"></div>
+                    <div class="history-thumbnail-bar"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-title">
+                  <span class="badge badge-accent badge-sm" style="margin-right: 4px;">First capture</span>
+                  Monitoring started
+                </div>
+                <div class="timeline-summary">Initial baseline snapshot captured</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="nav">
+      <div class="nav-inner">
+        <a href="dashboard.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Sites</span>
+        </a>
+        <a href="history.html" class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>History</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Settings</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <span class="demo-tag">DEMO</span>
+
+  <script>
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
+</body>
+</html>
